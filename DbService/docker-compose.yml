@@ -11,5 +11,14 @@ services:
     volumes:
       - postgres-data-new:/var/lib/postgresql/data
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"  
+      - "5672:5672"    
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
 volumes:
   postgres-data-new:
+  rabbitmq-data:
