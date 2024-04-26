@@ -1,4 +1,4 @@
-namespace resourcewatcher.Models;
+namespace ResourceWatcher.Models;
 
 public class ErrorViewModel
 {
