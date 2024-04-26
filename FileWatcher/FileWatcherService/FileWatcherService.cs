@@ -6,34 +6,31 @@ using Microsoft.Extensions.Configuration;
 
 public class FileWatcherService
 {
-    private readonly FileSystemWatcher _watcher;
-
-    public FileWatcherService(IConfiguration configuration)
+    private FileSystemWatcher _watcher;
+    public void SetPath(string path)
     {
-        string _pathToWatch = "/Users/yehengma/Projects/ResourceWatch/FileWatcher/FileWatcherService/test";
-        if (string.IsNullOrEmpty(_pathToWatch))
+        if (string.IsNullOrEmpty(path))
         {
             throw new InvalidOperationException("Watch folder path must be set.");
         }
-        _watcher = new FileSystemWatcher(_pathToWatch)
+        _watcher = new FileSystemWatcher(path)
         {
-            NotifyFilter = NotifyFilters.LastAccess
-                    | NotifyFilters.LastWrite
-                    | NotifyFilters.FileName
-                    | NotifyFilters.DirectoryName,
+            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
             Filter = "*.*",
-            IncludeSubdirectories = true
+            IncludeSubdirectories = true,
+            EnableRaisingEvents = true
         };
 
         _watcher.Created += OnCreated;
-        _watcher.Changed += OnChanged;
+        // _watcher.Changed += OnChanged;
         _watcher.EnableRaisingEvents = true;
     }
+
 
     private void OnCreated(object sender, FileSystemEventArgs e)
     {
         var timestamp = DateTime.Now;
-        var message = $"File created: {e.FullPath} at {timestamp}";
+        var message = $"{e.FullPath} | {timestamp}";
         Console.WriteLine(message);
         SendMessage(message);
     }
@@ -41,11 +38,10 @@ public class FileWatcherService
     private void OnChanged(object sender, FileSystemEventArgs e)
     {
         var timestamp = DateTime.Now;
-        var message = $"File changed: {e.FullPath} at {timestamp}";
+        var message = $"File changed: {e.FullPath} | {timestamp}";
         Console.WriteLine(message);
         SendMessage(message);
     }
-
 
     private void SendMessage(string message)
     {
@@ -66,4 +62,5 @@ public class FileWatcherService
                                  body: body);
         }
     }
+
 }

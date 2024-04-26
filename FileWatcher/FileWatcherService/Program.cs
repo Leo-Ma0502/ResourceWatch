@@ -1,19 +1,35 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
 
 class Program
 {
     public static void Main(string[] args)
     {
         var host = Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((hostingContext, configuration) =>
+            .ConfigureWebHostDefaults(webBuilder =>
             {
-                configuration.Sources.Clear();
-                configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                webBuilder.Configure(app =>
+                {
+                    app.UseRouting();
+                    app.UseEndpoints(endpoints =>
+                    {
+                        endpoints.MapPost("/setPath", async context =>
+                        {
+                            var fileWatcherService = context.RequestServices.GetRequiredService<FileWatcherService>();
+
+                            using (var reader = new StreamReader(context.Request.Body))
+                            {
+                                var path = await reader.ReadToEndAsync();
+                                fileWatcherService.SetPath(path);
+                            }
+
+                            await context.Response.WriteAsync("Path set successfully.");
+                        });
+                    });
+                });
             })
             .ConfigureServices((context, services) =>
             {
@@ -21,7 +37,6 @@ class Program
             })
             .Build();
 
-        var service = host.Services.GetRequiredService<FileWatcherService>();
         host.Run();
     }
 }

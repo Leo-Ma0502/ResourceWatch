@@ -11,6 +11,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton<RabbitMQMessageService>();
+builder.Services.AddSingleton<IFileWatcherService, FileWatcherService>();
+
+builder.Services.AddHttpClient<IFileWatcherService, FileWatcherService>(client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:5000/");
+    });
 
 var app = builder.Build();
 

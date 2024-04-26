@@ -2,19 +2,55 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div id="messages-container"></div>
+<div>
+    <input type="text" id="path-input" placeholder="Enter directory path" />
+    <button id="set-path-button">Set Path</button>
+    <div id="messages-container"></div>
+</div>
 
 @section Scripts {
     <script>
+        var lastReceivedTimestamp = 0;
+
+        document.getElementById('set-path-button').addEventListener("click", function () {
+            var path = document.getElementById('path-input').value;
+            if (!path) {
+                alert("Please enter a directory");
+                return;
+            }
+
+            $.ajax({
+                url: '/Home/SetWatchPath',
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({ path: path }),
+                success: function (response) {
+                    console.log('Success response:', response.message);
+                    document.getElementById('messages-container').innerHTML = response.message;
+                    document.getElementById('messages-container').innerHTML += ` Watching at "${path}"`;
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error status:', status);
+                    console.log('Error response:', xhr.responseText);
+                    document.getElementById('messages-container').innerHTML = 'Error: ' + xhr.responseText;
+                }
+            });
+        });
+
         setInterval(function () {
             $.ajax({
-                url: '@Url.Action("GetLatestMessages", "Home")',
+                url: '/Home/GetLatestMessages',
                 type: 'GET',
                 success: function (data) {
                     var messagesList = $('#messages-container');
-                    data && messagesList.append('<p>' + data + '</p>');
+                    var details = data?.split('|');
+                    if (details && details[1] !== lastReceivedTimestamp) {
+                        messagesList.append('<p>Path: ' + details[0] + ', Timestamp: ' + details[1] + '</p>');
+                        lastReceivedTimestamp = details[1]
+                    }
                 }
             });
-        }, 5000); 
+        }, 5000);
     </script>
 }
