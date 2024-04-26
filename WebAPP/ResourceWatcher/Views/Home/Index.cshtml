@@ -8,9 +8,52 @@
     <div id="messages-container"></div>
 </div>
 
+<style>
+    #messages-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .timestamp {
+        flex: 1;
+        padding-right: 20px;
+    }
+
+    .image-container {
+        flex: 2;
+        text-align: right;
+    }
+
+    .image-container img {
+        width: 100px;
+        height: auto;
+    }
+</style>
+
 @section Scripts {
     <script>
         var lastReceivedTimestamp = 0;
+
+        function updateMessagesList(timestamp, imagePath) {
+            var messagesList = $('#messages-container');
+            var messageItem = $('<div>').addClass('message-item');
+            var timestampDiv = $('<div>').addClass('timestamp').text('Timestamp: ' + timestamp);
+            var imageDiv = $('<div>').addClass('image-container');
+
+            var image = $('<img>').attr('src', imagePath).attr('alt', 'Message Image');
+
+            imageDiv.append(image);
+            messageItem.append(timestampDiv).append(imageDiv);
+            messagesList.append(messageItem);
+        }
 
         document.getElementById('set-path-button').addEventListener("click", function () {
             var path = document.getElementById('path-input').value;
@@ -46,7 +89,7 @@
                     var messagesList = $('#messages-container');
                     var details = data?.split('|');
                     if (details && details[1] !== lastReceivedTimestamp) {
-                        messagesList.append('<p>Path: ' + details[0] + ', Timestamp: ' + details[1] + '</p>');
+                        updateMessagesList(details[1], details[0].match(/images.*/)[0])
                         lastReceivedTimestamp = details[1]
                     }
                 }
