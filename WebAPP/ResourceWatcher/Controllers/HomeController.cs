@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ResourceWatcher.Models;
 
-namespace resourcewatcher.Controllers;
+namespace ResourceWatcher.Controllers;
 
 public class HomeController : Controller
 {
