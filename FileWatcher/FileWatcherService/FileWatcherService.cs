@@ -32,15 +32,20 @@ public class FileWatcherService
 
     private void OnCreated(object sender, FileSystemEventArgs e)
     {
-        Console.WriteLine($"File created: {e.FullPath}");
-        SendMessage($"File created: {e.FullPath}");
+        var timestamp = DateTime.Now;
+        var message = $"File created: {e.FullPath} at {timestamp}";
+        Console.WriteLine(message);
+        SendMessage(message);
     }
 
     private void OnChanged(object sender, FileSystemEventArgs e)
     {
-        Console.WriteLine($"File changed: {e.FullPath}");
-        SendMessage($"File changed: {e.FullPath}");
+        var timestamp = DateTime.Now;
+        var message = $"File changed: {e.FullPath} at {timestamp}";
+        Console.WriteLine(message);
+        SendMessage(message);
     }
+
 
     private void SendMessage(string message)
     {

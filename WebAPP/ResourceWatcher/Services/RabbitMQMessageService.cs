@@ -14,7 +14,7 @@ namespace ResourceWatcher.Services
             connection = factory.CreateConnection();
             channel = connection.CreateModel();
 
-            channel.QueueDeclare(queue: "hello",
+            channel.QueueDeclare(queue: "fileChanges",
                                  durable: false,
                                  exclusive: false,
                                  autoDelete: false,
@@ -32,13 +32,14 @@ namespace ResourceWatcher.Services
 
         public string ReceiveMessage()
         {
-            var result = channel.BasicGet("hello", true);
+            var result = channel.BasicGet("fileChanges", true);
             if (result != null)
             {
                 return Encoding.UTF8.GetString(result.Body.ToArray());
             }
             return null;
         }
+
 
         public void Dispose()
         {
