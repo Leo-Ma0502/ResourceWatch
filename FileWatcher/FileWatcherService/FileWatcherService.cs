@@ -29,8 +29,10 @@ public class FileWatcherService
 
     private void OnCreated(object sender, FileSystemEventArgs e)
     {
+        var imageBytes = File.ReadAllBytes(e.FullPath);
+        var base64Image = Convert.ToBase64String(imageBytes);
         var timestamp = DateTime.Now;
-        var message = $"{e.FullPath} | {timestamp}";
+        var message = $"{base64Image} | {timestamp}";
         Console.WriteLine(message);
         SendMessage(message);
     }
