@@ -26,16 +26,32 @@ public class FileWatcherService
         _watcher.EnableRaisingEvents = true;
     }
 
-
     private void OnCreated(object sender, FileSystemEventArgs e)
     {
         var imageBytes = File.ReadAllBytes(e.FullPath);
         var base64Image = Convert.ToBase64String(imageBytes);
         var timestamp = DateTime.Now;
-        var message = $"{base64Image} | {timestamp}";
-        Console.WriteLine($"new message sent at {timestamp}");
+
+        string mimeType = "image/jpeg";
+        string extension = Path.GetExtension(e.FullPath).ToLower();
+        switch (extension)
+        {
+            case ".png":
+                mimeType = "image/png";
+                break;
+            case ".gif":
+                mimeType = "image/gif";
+                break;
+            case ".bmp":
+                mimeType = "image/bmp";
+                break;
+        }
+
+        var message = $"{mimeType} | {base64Image} | {timestamp}";
+        Console.WriteLine($"New image of type {mimeType} sent at {timestamp}");
         SendMessage(message);
     }
+
 
     private void OnChanged(object sender, FileSystemEventArgs e)
     {

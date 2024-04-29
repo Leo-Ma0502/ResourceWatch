@@ -46,23 +46,25 @@
             .build();
 
         connection.on("ReceiveMessage", function (message) {
-            console.log("Received: ", message);
+            let [type, url, timestamp] = message.split(' | ');
+            if(timestamp && url && type){
+                updateMessagesList(timestamp, url, type);
+            }
         });
 
         connection.start().catch(function (err) {
             console.error(err.toString());
         });
-    </script>
-    <script>
+
         var lastReceivedTimestamp = 0;
 
-        function updateMessagesList(timestamp, imagePath) {
+        function updateMessagesList(timestamp, url, type) {
             var messagesList = $('#messages-container');
             var messageItem = $('<div>').addClass('message-item');
             var timestampDiv = $('<div>').addClass('timestamp').text('Timestamp: ' + timestamp);
             var imageDiv = $('<div>').addClass('image-container');
 
-            var image = $('<img>').attr('src', imagePath).attr('alt', 'Message Image');
+            var image = $('<img>').attr('src', `data:${type};base64,${url}`).attr('alt', 'Message Image');
 
             imageDiv.append(image);
             messageItem.append(timestampDiv).append(imageDiv);
@@ -95,19 +97,6 @@
             });
         });
 
-        @* setInterval(function () {
-        $.ajax({
-        url: '/Home/GetLatestMessages',
-        type: 'GET',
-        success: function (data) {
-        var messagesList = $('#messages-container');
-        var details = data?.split('|');
-        if (details && details[1] !== lastReceivedTimestamp) {
-        updateMessagesList(details[1], details[0].match(/images.*/)[0])
-        lastReceivedTimestamp = details[1]
-        }
-        }
-        });
-        }, 5000); *@
     </script>
+
 }
