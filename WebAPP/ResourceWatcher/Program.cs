@@ -1,6 +1,7 @@
 using ResourceWatcher.Data;
 using ResourceWatcher.Services;
 using Microsoft.EntityFrameworkCore;
+using ResourceWatcher.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +12,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton<RabbitMQMessageService>();
-builder.Services.AddSingleton<IFileWatcherService, FileWatcherService>();
+builder.Services.AddHostedService<RabbitMQMessageService>();
 
+builder.Services.AddSingleton<IFileWatcherService, FileWatcherService>();
 builder.Services.AddHttpClient<IFileWatcherService, FileWatcherService>(client =>
     {
         client.BaseAddress = new Uri("http://localhost:5000/");
     });
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -38,5 +42,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<MessageHub>("/messageHub");
 
 app.Run();

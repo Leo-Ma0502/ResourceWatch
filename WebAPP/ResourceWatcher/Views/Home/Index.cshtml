@@ -39,6 +39,20 @@
 </style>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/messageHub")
+            .build();
+
+        connection.on("ReceiveMessage", function (message) {
+            console.log("Received: ", message);
+        });
+
+        connection.start().catch(function (err) {
+            console.error(err.toString());
+        });
+    </script>
     <script>
         var lastReceivedTimestamp = 0;
 
@@ -81,19 +95,19 @@
             });
         });
 
-        setInterval(function () {
-            $.ajax({
-                url: '/Home/GetLatestMessages',
-                type: 'GET',
-                success: function (data) {
-                    var messagesList = $('#messages-container');
-                    var details = data?.split('|');
-                    if (details && details[1] !== lastReceivedTimestamp) {
-                        updateMessagesList(details[1], details[0].match(/images.*/)[0])
-                        lastReceivedTimestamp = details[1]
-                    }
-                }
-            });
-        }, 5000);
+        @* setInterval(function () {
+        $.ajax({
+        url: '/Home/GetLatestMessages',
+        type: 'GET',
+        success: function (data) {
+        var messagesList = $('#messages-container');
+        var details = data?.split('|');
+        if (details && details[1] !== lastReceivedTimestamp) {
+        updateMessagesList(details[1], details[0].match(/images.*/)[0])
+        lastReceivedTimestamp = details[1]
+        }
+        }
+        });
+        }, 5000); *@
     </script>
 }

@@ -33,7 +33,7 @@ public class FileWatcherService
         var base64Image = Convert.ToBase64String(imageBytes);
         var timestamp = DateTime.Now;
         var message = $"{base64Image} | {timestamp}";
-        Console.WriteLine(message);
+        Console.WriteLine($"new message sent at {timestamp}");
         SendMessage(message);
     }
 
