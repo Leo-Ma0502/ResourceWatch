@@ -8,10 +8,15 @@ namespace ResourceWatcher.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime Timestamp { get; set; }
+        [Url]
+        public string? Type { get; set; }
+
+        [Required]
+        public string? Timestamp { get; set; }
 
         [Required]
         [Url]
-        public string Url { get; set; }
+        public string? Url { get; set; }
+
     }
 }
