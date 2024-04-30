@@ -15,7 +15,7 @@ echo "Waiting for Docker services to start..."
 sleep 5
 
 echo "Running .NET projects..."
-dotnet run --project ../publish/FileWatcherService.dll &
-dotnet run --project ../publish/ResourceWatcher.dll &
+dotnet ../publish/FileWatcherService.dll &
+dotnet ../publish/ResourceWatcher.dll &
 
 wait
