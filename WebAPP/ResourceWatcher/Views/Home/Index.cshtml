@@ -33,7 +33,7 @@
     }
 
     .image-container img {
-        width: 100px;
+        min-width: 50%;
         height: auto;
     }
 </style>
@@ -41,13 +41,14 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
+        var currentTimeStamp = 0
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/messageHub")
             .build();
 
         connection.on("ReceiveMessage", function (message) {
             let [type, url, timestamp] = message.split(' | ');
-            if(timestamp && url && type){
+            if (timestamp && url && type) {
                 updateMessagesList(timestamp, url, type);
             }
         });
@@ -59,16 +60,19 @@
         var lastReceivedTimestamp = 0;
 
         function updateMessagesList(timestamp, url, type) {
-            var messagesList = $('#messages-container');
-            var messageItem = $('<div>').addClass('message-item');
-            var timestampDiv = $('<div>').addClass('timestamp').text('Timestamp: ' + timestamp);
-            var imageDiv = $('<div>').addClass('image-container');
+            if (timestamp !== currentTimeStamp) {
+                var messagesList = $('#messages-container');
+                var messageItem = $('<div>').addClass('message-item');
+                var timestampDiv = $('<div>').addClass('timestamp').text(timestamp);
+                var imageDiv = $('<div>').addClass('image-container');
 
-            var image = $('<img>').attr('src', `data:${type};base64,${url}`).attr('alt', 'Message Image');
+                var image = $('<img>').attr('src', `data:${type};base64,${url}`).attr('alt', 'Message Image');
 
-            imageDiv.append(image);
-            messageItem.append(timestampDiv).append(imageDiv);
-            messagesList.append(messageItem);
+                imageDiv.append(image);
+                messageItem.append(timestampDiv).append(imageDiv);
+                messagesList.append(messageItem);
+                currentTimeStamp = timestamp;
+            }
         }
 
         document.getElementById('set-path-button').addEventListener("click", function () {
