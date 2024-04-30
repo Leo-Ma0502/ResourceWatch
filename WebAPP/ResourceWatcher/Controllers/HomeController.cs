@@ -11,12 +11,15 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger;
     private readonly RabbitMQMessageService _rabbitMQMessageService;
     private readonly IFileWatcherService _fileWatcherService;
+    private readonly IMessageService _messageService;
 
-    public HomeController(ILogger<HomeController> logger, RabbitMQMessageService rabbitMQMessageService, IFileWatcherService fileWatcherService)
+
+    public HomeController(ILogger<HomeController> logger, RabbitMQMessageService rabbitMQMessageService, IFileWatcherService fileWatcherService, IMessageService messageService)
     {
         _logger = logger;
         _rabbitMQMessageService = rabbitMQMessageService;
         _fileWatcherService = fileWatcherService;
+        _messageService = messageService;
     }
 
     public IActionResult Index()
@@ -24,9 +27,13 @@ public class HomeController : Controller
         return View();
     }
 
-    public IActionResult History()
+    public async Task<IActionResult> History()
     {
-        return View();
+        var historyImgs = new ImageViewModel
+        {
+            Images = await _messageService.GetAllMessagesAsync()
+        };
+        return View(historyImgs);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

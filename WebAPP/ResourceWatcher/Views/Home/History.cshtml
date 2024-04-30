@@ -1,6 +1,22 @@
-﻿@{
+﻿@model ImageViewModel
+
+@{
     ViewData["Title"] = "History data";
 }
+<link rel="stylesheet" type="text/css" href="~/css/home.css" />
 <h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's history data.</p>
+<p>This page displays historical data</p>
+
+<ul>
+    @foreach (var record in Model.Images)
+    {
+            <div class="message-item">
+                <div class="timestamp">@record.Timestamp</div>
+                <div class="image-container">
+                    <img src="data:@record.Type;base64,@record.Url" alt="Message Image">
+                </div>
+            </div>
+
+    }
+</ul>
