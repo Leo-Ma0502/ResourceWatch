@@ -14,7 +14,7 @@
         width: 100%;
         display: flex;
         flex-wrap: wrap;
-        justify-content: center; 
+        justify-content: center;
     }
 
     .message-item {
@@ -63,17 +63,16 @@
         var lastReceivedTimestamp = 0;
 
         function updateMessagesList(timestamp, url, type) {
-                var messagesList = $('#messages-container');
-                var messageItem = $('<div>').addClass('message-item');
-                var timestampDiv = $('<div>').addClass('timestamp').text(timestamp);
-                var imageDiv = $('<div>').addClass('image-container');
+            var messagesList = $('#messages-container');
+            var messageItem = $('<div>').addClass('message-item');
+            var timestampDiv = $('<div>').addClass('timestamp').text(timestamp);
+            var imageDiv = $('<div>').addClass('image-container');
 
-                var image = $('<img>').attr('src', `data:${type};base64,${url}`).attr('alt', 'Message Image');
+            var image = $('<img>').attr('src', `data:${type};base64,${url}`).attr('alt', 'Message Image');
 
-                imageDiv.append(image);
-                messageItem.append(timestampDiv).append(imageDiv);
-                messagesList.append(messageItem);
-            }
+            imageDiv.append(image);
+            messageItem.append(timestampDiv).append(imageDiv);
+            messagesList.append(messageItem);
         }
 
         document.getElementById('set-path-button').addEventListener("click", function () {
