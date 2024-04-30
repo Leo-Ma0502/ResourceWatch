@@ -11,6 +11,7 @@ namespace ResourceWatcher.Services
         private readonly IConnection _connection;
         private readonly IModel _channel;
         private readonly IHubContext<MessageHub> _hubContext;
+        private readonly IMessageService _messageService;
 
         public RabbitMQMessageService(IHubContext<MessageHub> hubContext)
         {
@@ -34,6 +35,7 @@ namespace ResourceWatcher.Services
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+                await _messageService.SaveMessageAsync(message);
                 _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };
             _channel.BasicConsume(queue: "fileChanges", autoAck: false, consumer: consumer);
