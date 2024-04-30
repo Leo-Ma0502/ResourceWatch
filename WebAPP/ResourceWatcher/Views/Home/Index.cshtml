@@ -5,6 +5,7 @@
 <div>
     <input type="text" id="path-input" placeholder="Enter directory path" />
     <button id="set-path-button">Set Path</button>
+    <p id="path-info"></p>
     <div id="messages-container"></div>
 </div>
 
@@ -12,14 +13,17 @@
     #messages-container {
         width: 100%;
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center; 
     }
 
     .message-item {
         display: flex;
+        flex: 0 0 20%;
+        flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin: 10px;
     }
 
     .timestamp {
@@ -33,7 +37,7 @@
     }
 
     .image-container img {
-        min-width: 50%;
+        min-width: 20%;
         height: auto;
     }
 </style>
@@ -90,13 +94,13 @@
                 data: JSON.stringify({ path: path }),
                 success: function (response) {
                     console.log('Success response:', response.message);
-                    document.getElementById('messages-container').innerHTML = response.message;
-                    document.getElementById('messages-container').innerHTML += ` Watching at "${path}"`;
+                    document.getElementById('path-info').innerHTML = response.message;
+                    document.getElementById('path-info').innerHTML += ` Watching at "${path}"`;
                 },
                 error: function (xhr, status, error) {
                     console.log('Error status:', status);
                     console.log('Error response:', xhr.responseText);
-                    document.getElementById('messages-container').innerHTML = 'Error: ' + xhr.responseText;
+                    document.getElementById('path-info').innerHTML = 'Error: ' + xhr.responseText;
                 }
             });
         });
