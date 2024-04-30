@@ -34,8 +34,9 @@ namespace ResourceWatcher.Services
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };
-            _channel.BasicConsume(queue: "fileChanges", autoAck: true, consumer: consumer);
+            _channel.BasicConsume(queue: "fileChanges", autoAck: false, consumer: consumer);
 
             return Task.CompletedTask;
         }
