@@ -45,4 +45,10 @@ app.MapControllerRoute(
 
 app.MapHub<MessageHub>("/messageHub");
 
+Console.CancelKeyPress += (sender, e) =>
+{
+    Console.WriteLine("Exiting...");
+    e.Cancel = true;
+};
+
 app.Run();

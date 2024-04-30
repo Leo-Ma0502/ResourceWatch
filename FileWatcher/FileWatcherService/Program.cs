@@ -36,6 +36,11 @@ class Program
                 services.AddSingleton<FileWatcherService>();
             })
             .Build();
+        Console.CancelKeyPress += (sender, e) =>
+       {
+           Console.WriteLine("Shutting down the application...");
+           e.Cancel = true;
+       };
 
         host.Run();
     }
