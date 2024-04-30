@@ -3,16 +3,6 @@ using ResourceWatcher.Services;
 using Microsoft.EntityFrameworkCore;
 using ResourceWatcher.Hubs;
 
-Console.WriteLine("Please enter the port number for the file watcher service:");
-string portInput = Console.ReadLine();
-var port = ValidatePort(portInput) ? portInput : "5000";
-
-static bool ValidatePort(string input)
-{
-    return int.TryParse(input, out int port) && port > 1024 && port < 65535;
-}
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -27,7 +17,7 @@ builder.Services.AddHostedService<RabbitMQMessageService>();
 builder.Services.AddSingleton<IFileWatcherService, FileWatcherService>();
 builder.Services.AddHttpClient<IFileWatcherService, FileWatcherService>(client =>
     {
-        client.BaseAddress = new Uri($"http://localhost:{port}/");
+        client.BaseAddress = new Uri($"http://localhost:5000/");
     });
 
 builder.Services.AddSignalR();
