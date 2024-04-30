@@ -45,7 +45,6 @@
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
-        var currentTimeStamp = 0
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/messageHub")
             .build();
@@ -64,7 +63,6 @@
         var lastReceivedTimestamp = 0;
 
         function updateMessagesList(timestamp, url, type) {
-            if (timestamp !== currentTimeStamp) {
                 var messagesList = $('#messages-container');
                 var messageItem = $('<div>').addClass('message-item');
                 var timestampDiv = $('<div>').addClass('timestamp').text(timestamp);
@@ -75,7 +73,6 @@
                 imageDiv.append(image);
                 messageItem.append(timestampDiv).append(imageDiv);
                 messagesList.append(messageItem);
-                currentTimeStamp = timestamp;
             }
         }
 
