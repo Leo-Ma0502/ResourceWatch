@@ -14,11 +14,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<RabbitMQMessageService>();
 builder.Services.AddHostedService<RabbitMQMessageService>();
 
+builder.Services.AddScoped<IMessageService, MessageService>();
+
 builder.Services.AddSingleton<IFileWatcherService, FileWatcherService>();
-builder.Services.AddHttpClient<IFileWatcherService, FileWatcherService>(client =>
-    {
-        client.BaseAddress = new Uri($"http://localhost:5000/");
-    });
+builder.Services.AddHttpClient();
 
 builder.Services.AddSignalR();
 

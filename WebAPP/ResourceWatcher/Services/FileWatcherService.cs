@@ -7,9 +7,10 @@ namespace ResourceWatcher.Services
     {
         private readonly HttpClient _httpClient;
 
-        public FileWatcherService(HttpClient httpClient)
+        public FileWatcherService(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClient;
+            _httpClient = httpClientFactory.CreateClient();
+            _httpClient.BaseAddress = new Uri("http://localhost:5000/");
         }
 
         public async Task<bool> SetWatchPathAsync(string path)

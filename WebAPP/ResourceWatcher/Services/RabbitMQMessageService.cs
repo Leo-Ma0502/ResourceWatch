@@ -11,11 +11,12 @@ namespace ResourceWatcher.Services
         private readonly IConnection _connection;
         private readonly IModel _channel;
         private readonly IHubContext<MessageHub> _hubContext;
-        private readonly IMessageService _messageService;
+        private readonly IServiceScopeFactory _scopeFactory;
 
-        public RabbitMQMessageService(IHubContext<MessageHub> hubContext)
+        public RabbitMQMessageService(IHubContext<MessageHub> hubContext, IServiceScopeFactory scopeFactory)
         {
             _hubContext = hubContext;
+            _scopeFactory = scopeFactory;
             var factory = new ConnectionFactory() { HostName = "localhost" };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
@@ -32,6 +33,9 @@ namespace ResourceWatcher.Services
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += async (model, ea) =>
             {
+                using var scope = _scopeFactory.CreateScope();
+                var _messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
+
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
                 await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
