@@ -36,10 +36,11 @@ class Program
         }
 
         Console.WriteLine("Please enter a port to start the web server:");
-        int userPort;
-        while (!int.TryParse(Console.ReadLine(), out userPort) || userPort < 1024 || userPort > 65535)
+        int userPort = int.Parse(Console.ReadLine());
+        if (!int.TryParse(Console.ReadLine(), out userPort) || userPort < 1024 || userPort > 65535)
         {
             Console.WriteLine("Invalid port. Please enter a valid port number (1024-65535):");
+            userPort = int.Parse(Console.ReadLine());
         }
 
         int availablePort = GetAvailablePort(userPort);
